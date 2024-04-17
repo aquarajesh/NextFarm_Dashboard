@@ -1,2 +1,5 @@
 1. https://blog.streamlit.io/streamlit-firestore/
 2. $ pip install -r requirements.txt
+run below command 
+python key-to-toml.py
+//add firebase-key and toml files to gitignore

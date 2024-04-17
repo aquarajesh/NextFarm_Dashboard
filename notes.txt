@@ -3,3 +3,6 @@
 run below command 
 python key-to-toml.py
 //add firebase-key and toml files to gitignore
+
+//
+streamlit run app.py

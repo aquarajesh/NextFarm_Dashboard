@@ -2,26 +2,30 @@ import streamlit as st
 import json
 from google.cloud import firestore
 from google.oauth2 import service_account
+import pandas as pd
+import farmdata as fd
 
 key_dict = json.loads(st.secrets["textkey"])
 creds = service_account.Credentials.from_service_account_info(key_dict)
-db = firestore.Client(credentials=creds, project="streamlit-firestore-b2ed0")
+db = firestore.Client(credentials=creds, project="nextaqua-22991")
 
-# Streamlit widgets to let a user create a new post
-title = st.text_input("Post title")
-url = st.text_input("Post url")
-submit = st.button("Submit new post")
-
-# Once the user has submitted, upload it to the database
-if title and url and submit:
-	doc_ref = db.collection("posts").document(title)
-
+checktray_ref = db.collection("checktraydata")
+checktray_docs = (
+    db.collection("checktraydata").where("isRealSite", "==", True)
+    .stream()
+)
 # And then render each post, using some light Markdown
-posts_ref = db.collection("posts")
-for doc in posts_ref.stream():
-	post = doc.to_dict()
-	title = post["title"]
-	url = post["url"]
+for doc in checktray_docs:
+	fd.displayDocument(doc)
 
-	st.subheader(f"Post: {title}")
-	st.write(f":link: [{url}]({url})")
+
+# doc_ref = db.collection("checktraydata").document("AGV2402246188")
+# doc = doc_ref.get()
+# fd.displayDocument(doc)
+
+
+     
+
+# Add final separator to end of grid
+
+

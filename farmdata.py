@@ -15,7 +15,7 @@ def display_farmheader(doc_data):
          st.markdown(f"**Crop Active:** {getDictValue(doc_data,'cropActive')}")
          st.markdown(f"**Section Id:** {getDictValue(doc_data,'section_id')}")
          st.markdown(f"**Shipping Address:** {getDictValue(doc_data,'shipping_address')}")   
-         st.markdown(f"**RealSite:** {doc_data['isRealSite']}")  
+         st.markdown(f"**RealSite:** {getDictValue(doc_data,'isRealSite')}")  
          st.markdown(f"**Location:** {getDictValue(doc_data,'gps_location')}")
 
 
@@ -63,12 +63,12 @@ def display_ponds(doc_data):
         with columns[col_idx]:
             container = st.container(border=True)
             with container:
-                 st.markdown(f"**Pond Name:** {pond['pond_name']}")
+                 st.markdown(f"**Pond Name:** {getDictValue(pond,'pond_name')}")
                  with st.popover("other information"):
-                      st.markdown(f"**Pond Id:** {pond['pond_id']}")
-                      st.markdown(f"**RFID:** {pond['rfid']}")
+                      st.markdown(f"**Pond Id:** {getDictValue(pond,'pond_id')}")
+                      st.markdown(f"**RFID:** {getDictValue(pond,'rfid')}")
                       st.markdown(f"**Option Id:** {getDictValue(pond,'optionId')}")
-                      st.markdown(f"**Acres:** {pond['acres']}")
+                      st.markdown(f"**Acres:** {getDictValue(pond,'acres')}")
                  with st.popover("Checktrays"):
                     df = pd.DataFrame(pond['checktrays'])
                     st.dataframe(df)

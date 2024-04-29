@@ -69,6 +69,7 @@ def display_ponds(doc_data):
                       st.markdown(f"**RFID:** {getDictValue(pond,'rfid')}")
                       st.markdown(f"**Option Id:** {getDictValue(pond,'optionId')}")
                       st.markdown(f"**Acres:** {getDictValue(pond,'acres')}")
+                      st.markdown(f"**Pond Crops:** {getDictValue(pond,'crops')}")
                  with st.popover("Checktrays"):
                     df = pd.DataFrame(pond['checktrays'])
                     st.dataframe(df)

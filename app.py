@@ -31,11 +31,15 @@ with tab1:
          msgs_docs = (db.collection(message_path).get())
          for doc in msgs_docs:
              bsd.displayDocument(doc)
-with tab2:          
-    if st.button('Show Farms'):
-       checktray_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
-       for doc in checktray_docs:
-	       fd.displayDocument(doc)
+with tab2:
+     checktray_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
+     for doc in checktray_docs:
+         fd.showMetadata(doc)
+        
+    # if st.button('Show Farms'):
+    #    checktray_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
+    #    for doc in checktray_docs:
+	#        fd.displayDocument(doc)
 
 
     

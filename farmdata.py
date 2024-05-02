@@ -7,7 +7,6 @@ def getDictValue(dictObj,strKey):
         return dictObj[strKey]
     return None
 
-
 def display_farmheader(doc_data):
     st.header(f"**Farm:** {doc_data['farm_name']}")
     with st.popover("More Information"):

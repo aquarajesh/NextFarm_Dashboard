@@ -32,9 +32,17 @@ with tab1:
          for doc in msgs_docs:
              bsd.displayDocument(doc)
 with tab2:
-     checktray_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
-     for doc in checktray_docs:
-         fd.showMetadata(doc)
+     farmdocs_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
+     farm_ids = []
+     for doc in farmdocs_docs:
+         farm_ids.append(doc.id)
+     option = st.selectbox("select Farm id",farm_ids,index=None,placeholder="Select Farm id...")
+     if option:
+        farmdoc_path = st.text_input('Enter Farm data Path:', 'checktraydata/'+option)
+        st.write('The current messagges from:', farmdoc_path)
+        if farmdoc_path:
+           farm_doc = (db.collection(farmdoc_path).get())
+           fd.displayDocument(farm_doc)
         
     # if st.button('Show Farms'):
     #    checktray_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())

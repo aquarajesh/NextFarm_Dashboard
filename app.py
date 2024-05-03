@@ -20,10 +20,30 @@ with tabAnlyse:
      option = st.selectbox("select Farm id",farm_ids,index=0,placeholder="Select Farm id...")
      message_path = st.text_input('Enter messages Collection Path:', 'crops_test/'+option+'/croptables')
      st.write('The current messagges from:', message_path)
+     restockingPonds = {}
      if message_path:
          msgs_docs = (db.collection(message_path).get())
          for doc in msgs_docs:
              bsd.displayDocument(doc)
+             doc_data = doc.to_dict()
+             tblType = bsd.getDictValue(doc_data,'tableType')
+             tabledata = bsd.getDictValue(doc_data,'tabledata')
+             if tblType.lower() == 'stockingtable':
+                for row in tabledata:
+                    opindid = row["id"]
+                    if row["optionId"] == "7":
+                       if opindid not in restockingPonds.keys():
+                           restockingPonds[opindid] = {
+                               "harvested": True
+                           }
+                    else:
+                        if opindid in restockingPonds.keys():
+                            restockingPonds[opindid]["restocked"] = True
+         if len(restockingPonds.keys()):
+             st.write("Restocking Ponds")
+             df = pd.DataFrame(restockingPonds)
+             st.dataframe(df)
+                 
      
 # with tab1:
 #      farm_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())

@@ -9,6 +9,8 @@ import bubble_msg_data as bsd
 key_dict = json.loads(st.secrets["textkey"])
 creds = service_account.Credentials.from_service_account_info(key_dict)
 db = firestore.Client(credentials=creds, project="nextaqua-22991")
+farm_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
+
 tabAnlyse,tab1, tab2 = st.tabs(["Analyse Tables","NextFarmBubbleTables", "Farms"])
 with tabAnlyse:
      farmdocs_docs = (db.collection("crops_test").list_documents())
@@ -23,25 +25,41 @@ with tabAnlyse:
          for doc in msgs_docs:
              bsd.displayDocument(doc)
      
-with tab1:
-      message_path = st.text_input('Enter messages Collection Path:', 'nextfarm_messages/AQU1304248352/cycle1/messages/data')
-      st.write('The current messagges from:', message_path)
-       #/nextfarm_messages/AQU1304248352/cycle1/messages/data
-      if message_path:
-         msgs_docs = (db.collection(message_path).get())
-         for doc in msgs_docs:
-             bsd.displayDocument(doc)
+# with tab1:
+#      farm_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
+#      farm_ids = []  
+#      for doc in farm_docs:
+#          farm_ids.append(doc.id)
+#      option1 = st.selectbox("select Farm id",farm_ids,index=None,placeholder="Select Farm id...")
+#      if option1:
+#         current_doc = None
+#         for doc in farm_docs:
+#             if doc.id == option1:
+#                current_doc = doc
+#                break
+#         if current_doc.exists: 
+#             data = current_doc.to_dict() 
+#             cycle = data["crop"]  
+#             cycle = cycle.lower().replace("crop", "cycle")
+#             docPath = 'nextfarm_messages/'+option1+'/'+cycle+'/messages/data'
+#             message_path = st.text_input('Enter messages Collection Path:', docPath)
+#             st.write('The current messagges from:', message_path)
+#        #/nextfarm_messages/AQU1304248352/cycle1/messages/data
+#             if message_path:
+#                msgs_docs = (db.collection(message_path).get())
+#                for doc in msgs_docs:
+#                    bsd.displayDocument(doc)
 with tab2:
-     farmdocs_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
-     farm_ids = []
-     for doc in farmdocs_docs:
-         farm_ids.append(doc.id)
-     option = st.selectbox("select Farm id",farm_ids,index=None,placeholder="Select Farm id...")
-     if option:
-        farmdoc_path = st.text_input('Enter Farm data Path:', 'checktraydata/'+option)
-        st.write('The current messagges from:', farmdoc_path)
+     farm_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
+     docids = []  
+     for doc in farm_docs:
+         docids.append(doc.id)
+     option2 = st.selectbox("select Farm id",docids,index=None,placeholder="Select Farm id...")
+     if option2:
+        farmdoc_path = st.text_input('Enter Farm data Path:', 'checktraydata/'+option2)
+        st.write('The Farm Data:', farmdoc_path)
         if farmdoc_path:
-           farm_doc = (db.collection(farmdoc_path).get())
+           farm_doc = (db.collection('checktraydata').document(option2).get())
            fd.displayDocument(farm_doc)
         
     # if st.button('Show Farms'):

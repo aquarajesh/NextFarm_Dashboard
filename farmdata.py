@@ -84,6 +84,7 @@ def displayDocument(doc):
     container = st.container(border=True)
     with container:
          display_farmheader(doc_data)
+         showMetadata(doc_data)
          with st.expander("Ponds"):
               display_ponds(doc_data)
          with st.expander("Supervisors"):
@@ -95,17 +96,8 @@ def displayDocument(doc):
          with st.expander("Access Numbers"):
               display_access_numbers(doc_data)
 def showMetadata(doc):
-    doc_data = doc.to_dict()
-    container = st.container(border=True)
-    with container:
-        st.markdown(f"**Crop:** {getDictValue(doc_data,'crop')}")
-        st.markdown(f"**Crop Active:** {getDictValue(doc_data,'cropActive')}")
-        st.markdown(f"**Section Id:** {getDictValue(doc_data,'section_id')}")
-        st.markdown(f"**Shipping Address:** {getDictValue(doc_data,'shipping_address')}")   
-        st.markdown(f"**RealSite:** {getDictValue(doc_data,'isRealSite')}")  
-        st.markdown(f"**Location:** {getDictValue(doc_data,'gps_location')}")
-        with st.popover("More Information:"):
-            st.json(doc.to_dict())
+    with st.popover("json:"):
+         st.json(doc)
 
            
 

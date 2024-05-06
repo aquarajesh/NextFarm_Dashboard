@@ -45,36 +45,31 @@ with tabAnlyse:
              st.dataframe(df)
                  
      
-# with tab1:
-#      farm_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
-#      farm_ids = []  
-#      for doc in farm_docs:
-#          farm_ids.append(doc.id)
-#      option1 = st.selectbox("select Farm id",farm_ids,index=None,placeholder="Select Farm id...")
-#      if option1:
-#         current_doc = None
-#         for doc in farm_docs:
-#             if doc.id == option1:
-#                current_doc = doc
-#                break
-#         if current_doc.exists: 
-#             data = current_doc.to_dict() 
-#             cycle = data["crop"]  
-#             cycle = cycle.lower().replace("crop", "cycle")
-#             docPath = 'nextfarm_messages/'+option1+'/'+cycle+'/messages/data'
-#             message_path = st.text_input('Enter messages Collection Path:', docPath)
-#             st.write('The current messagges from:', message_path)
-#        #/nextfarm_messages/AQU1304248352/cycle1/messages/data
-#             if message_path:
-#                msgs_docs = (db.collection(message_path).get())
-#                for doc in msgs_docs:
-#                    bsd.displayDocument(doc)
+with tab1:
+     farm_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
+     farm_ids = []  
+     for doc in farm_docs:
+         farm_ids.append(doc.id)
+     option1 = st.selectbox("select Farm id",farm_ids,index=None,placeholder="Select Farm id...",key="messagesdata")
+     if option1:
+        current_doc = None
+        for doc in farm_docs:
+            if doc.id == option1:
+               current_doc = doc
+               break
+        if current_doc.exists: 
+            data = current_doc.to_dict() 
+            docPath = 'nextfarm_data/'+option1+'/allcrops/messages/data'
+            st.write('The current messagges from:', docPath)
+            msgs_docs = (db.collection(docPath).get())
+            for doc in msgs_docs:
+                bsd.displayDocument(doc)
 with tab2:
      farm_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
      docids = []  
      for doc in farm_docs:
          docids.append(doc.id)
-     option2 = st.selectbox("select Farm id",docids,index=None,placeholder="Select Farm id...")
+     option2 = st.selectbox("select Farm id",docids,index=None,placeholder="Select Farm id...",key="farmsdata")
      if option2:
         farmdoc_path = st.text_input('Enter Farm data Path:', 'checktraydata/'+option2)
         st.write('The Farm Data:', farmdoc_path)

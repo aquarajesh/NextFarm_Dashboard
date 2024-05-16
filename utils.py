@@ -17,4 +17,8 @@ tableTypes = [
 "proBrewTable",
 "doIOTTable",
 "phIOTTable",
-"weighingMachineTable"]
+"weighingMachineTable",
+"WaterParameter", 
+"smartScaleWeighingTable",
+"reportComment"
+]

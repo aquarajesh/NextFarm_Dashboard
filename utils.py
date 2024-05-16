@@ -13,7 +13,7 @@ tableTypes = [
 "checkTray",
 "WaterRemainder",
 "FeedRemainder",
-"aquabotTable",
+"mealTable",
 "proBrewTable",
 "doIOTTable",
 "phIOTTable",

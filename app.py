@@ -6,6 +6,8 @@ import pandas as pd
 import farmdata as fd
 import bubble_msg_data as bsd
 import utils
+from collections import defaultdict
+
 
 key_dict = json.loads(st.secrets["textkey"])
 creds = service_account.Credentials.from_service_account_info(key_dict)
@@ -17,21 +19,32 @@ storage_client = storage.Client(credentials=creds, project=key_dict["project_id"
 # Name of your bucket
 bucket_name = 'checktray-ml'  # Corrected bucket name
 
-def count_images_by_day():
+def count_images():
     try:
         bucket = storage_client.bucket(bucket_name)
         blobs = bucket.list_blobs(prefix='ml/')  # Use prefix to specify directory within the bucket
-        day_counts = {}
+
+        day_counts = defaultdict(int)
+        week_counts = defaultdict(int)
+        month_counts = defaultdict(int)
+        total_count = 0
+
         for blob in blobs:
             creation_date = blob.time_created
             day = creation_date.strftime('%Y-%m-%d')
-            if day not in day_counts:
-                day_counts[day] = 0
+            week = creation_date.strftime('%Y-%U')  # %U gives the week number of the year (00-53)
+            month = creation_date.strftime('%Y-%m')
+
             day_counts[day] += 1
-        return day_counts
+            week_counts[week] += 1
+            month_counts[month] += 1
+            total_count += 1
+
+        return day_counts, week_counts, month_counts, total_count
     except Exception as e:
-        st.error(f"Error counting images: {e}")
-        return None
+        print(f"Error counting images: {e}")
+        return None, None, None, None
+
 
 #Firebase
 farm_docs = (db.collection("checktraydata").where("ax_django_id", ">", 1).get())
@@ -88,17 +101,38 @@ with tab2:
 with tab3:
     st.title("Image Count by Day in Google Cloud Storage")
     if st.button("Count Images"):
-        day_counts = count_images_by_day()
-        if day_counts:
+        # Call the function
+        day_counts, week_counts, month_counts, total_count = count_images()
+        # Prepare the final report in JSON format
+        report = {
+            "daily_counts": day_counts,
+            "weekly_counts": week_counts,
+            "monthly_counts": month_counts,
+            "total_count": total_count
+        }
+        # Convert the report to JSON string
+        report_json = json.dumps(report, indent=4)
+        with st.popover("json:"):
+             st.json(report_json)
+        st.subheader(f"Total Image Count: {total_count}")
+        daycounttab, weekcounttab, monthcounttab = st.tabs(["Day Counts","Week Counts", "Monthly"])
+        with daycounttab:
         # Convert day_counts dictionary to a DataFrame
             df = pd.DataFrame(list(day_counts.items()), columns=['Date', 'Count'])
             df = df.sort_values(by='Date')
             st.subheader("Image Counts by Day")
             st.table(df)
-            total_count = df['Count'].sum()
-            st.subheader(f"Total Image Count: {total_count}")
-        else:
-            st.write("No images found or an error occurred.")
+        with weekcounttab:
+             df = pd.DataFrame(list(week_counts.items()), columns=['Week', 'Count'])
+             df = df.sort_values(by='Week')
+             st.subheader("Image Counts by Week")
+             st.table(df)
+        with monthcounttab:
+             df = pd.DataFrame(list(month_counts.items()), columns=['Month', 'Count'])
+             df = df.sort_values(by='Month')
+             st.subheader("Image Counts by Month")
+             st.table(df)
+             
 
 
         
